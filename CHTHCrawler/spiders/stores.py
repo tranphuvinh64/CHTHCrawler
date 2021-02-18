@@ -51,10 +51,10 @@ class ExceptHCMStoreSpider(CrawlSpider):
     start_urls = [firstpage]
     rules = (
         Rule(LinkExtractor(
-            restrict_xpaths='//p[@class="page-nav"]/a[text()="›"]'), callback='loggingPage', follow=True),
+            restrict_xpaths='//p[@class="page-nav"]/a[text()="›"]'), callback='loggingPage', follow=True, errback='logError'),
         Rule(LinkExtractor(
                  restrict_xpaths='//div[@class="tc_have"]/ul/div[@class="news-v3 bg-color-white"]/div[not(div[@class="row"]/div[@class="col-md-4"]/p/a/strong[text()="Hồ Chí Minh"])]/h2/a'),
-        callback='parse_item'),)
+        callback='parse_item', errback='logError'),)
     def loggingPage(self, response):
         seperate = "|"
         active = response.xpath('//p[@class="page-nav"]/a[@class="page-nav-act active"]').extract_first()
@@ -69,6 +69,14 @@ class ExceptHCMStoreSpider(CrawlSpider):
             f.write(seperate)
             f.write(str(response.status))
             f.write("\n")
+
+    def logError(self, failure):
+        with open("./log/err.txt", "a+") as f:
+            f.write(str(failure.value.response.status))
+            f.write("|")
+            f.write(failure.value.response.url)
+            f.write("\n")
+
 
     def parse_item(self, response):
         Tinh = response.xpath('//ul[@class="pull-left breadcrumb"]/li[2]/a/span/text()').extract_first()
