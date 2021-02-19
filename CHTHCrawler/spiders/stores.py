@@ -4,6 +4,8 @@ import os
 import re
 from scrapy.exceptions import CloseSpider
 from .config import firstpage, lastpage, firstpage_num, lastpage_num
+import pytz
+from datetime import datetime
 
 def getStartURL_HCM():
     flag = 'https://www.cuahangtaphoa.com/danh-sach-cua-hang-tap-hoa-ho-chi-minh/'
@@ -29,10 +31,15 @@ class HCMStoreSpider(CrawlSpider):
 
 
     def logging(self, response):
+        formattime = "%Y:%m:%d %H:%M:%S"
+        timezone = 'Asia/SaiGon'
+        str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         active = response.xpath('//p[@class="page-nav"]/a[@class="page-nav-act active"]').extract_first()
         if response.url.find(lastpage) != -1 or active is None:
             raise CloseSpider("achieved limit page")
         with open("./result/linkpage.txt", "a+") as f:
+            f.write(str_currenttime)
+            f.write("|")
             f.write(response.url)
             f.write("\n")
 
@@ -63,15 +70,25 @@ class ExceptHCMStoreSpider(CrawlSpider):
                 f.write("done")
                 f.write("\n")
             raise CloseSpider("achieved limit page")
-        
+
+        formattime = "%Y:%m:%d %H:%M:%S"
+        timezone = 'Asia/SaiGon'
+        str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         with open(f"./log/{firstpage_num}_{lastpage_num}.txt", "a+") as f:
+            f.write(str_currenttime)
+            f.write("|")
             f.write(response.url)
             f.write(seperate)
             f.write(str(response.status))
             f.write("\n")
 
     def logError(self, failure):
+        formattime = "%Y:%m:%d %H:%M:%S"
+        timezone = 'Asia/SaiGon'
+        str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         with open("./log/err.txt", "a+") as f:
+            f.write(str_currenttime)
+            f.write("|")
             f.write(str(failure.value.response.status))
             f.write("|")
             f.write(failure.value.response.url)

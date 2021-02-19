@@ -1,5 +1,5 @@
-firstpage_num = 83235
-lastpage_num  = 'end'
+firstpage_num = 1
+lastpage_num  = 3
 
 firstpage = f'https://www.cuahangtaphoa.com/page-{firstpage_num}-cua-hang-tap-hoa.html'
 
