@@ -72,7 +72,7 @@ class ExceptHCMStoreSpider(CrawlSpider):
             raise CloseSpider("achieved limit page")
 
         formattime = "%Y:%m:%d %H:%M:%S"
-        timezone = 'Asia/SaiGon'
+        timezone = 'Asia/Saigon'
         str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         with open(f"./log/{firstpage_num}_{lastpage_num}.txt", "a+") as f:
             f.write(str_currenttime)
