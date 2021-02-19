@@ -32,7 +32,7 @@ class HCMStoreSpider(CrawlSpider):
 
     def logging(self, response):
         formattime = "%Y:%m:%d %H:%M:%S"
-        timezone = 'Asia/SaiGon'
+        timezone = 'Asia/Saigon'
         str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         active = response.xpath('//p[@class="page-nav"]/a[@class="page-nav-act active"]').extract_first()
         if response.url.find(lastpage) != -1 or active is None:
@@ -84,7 +84,7 @@ class ExceptHCMStoreSpider(CrawlSpider):
 
     def logError(self, failure):
         formattime = "%Y:%m:%d %H:%M:%S"
-        timezone = 'Asia/SaiGon'
+        timezone = 'Asia/Saigon'
         str_currenttime = datetime.utcnow().replace(tzinfo=pytz.utc).astimezone(pytz.timezone(timezone)).strftime(formattime)
         with open("./log/err.txt", "a+") as f:
             f.write(str_currenttime)
