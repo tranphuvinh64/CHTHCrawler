@@ -6,6 +6,7 @@ from scrapy.exceptions import CloseSpider
 from .config import firstpage, lastpage, firstpage_num, lastpage_num
 import pytz
 from datetime import datetime
+import scrapy
 
 def getStartURL_HCM():
     flag = 'https://www.cuahangtaphoa.com/danh-sach-cua-hang-tap-hoa-ho-chi-minh/'
@@ -15,6 +16,14 @@ def getStartURL_HCM():
                 if line.strip() != '':
                     flag = line.strip()
     return flag
+
+def getMissedLinks(path):
+    lst = []
+    with open(path, "r") as f:
+        for line in f:
+            line = line.strip()
+            lst.append(line)
+    return lst
                     
 # if __name__ == "__main__":
 #     print(getStartURL())
@@ -96,6 +105,19 @@ class ExceptHCMStoreSpider(CrawlSpider):
 
 
     def parse_item(self, response):
+        Tinh = response.xpath('//ul[@class="pull-left breadcrumb"]/li[2]/a/span/text()').extract_first()
+        store = Store()
+        store.url = response.url
+        li = (response.xpath('//div[@class="article-content"]/span/ul/li'))
+        for i in range(1, len(li) + 1):
+            store.setAttribute(i, response=response)
+        store.toFile(response=response)
+        store.logging(response)
+
+class SpecificStores(scrapy.Spider):
+    name = "specific"
+    start_urls = getMissedLinks("./MissedLinks.txt")
+    def parse(self, response):
         Tinh = response.xpath('//ul[@class="pull-left breadcrumb"]/li[2]/a/span/text()').extract_first()
         store = Store()
         store.url = response.url

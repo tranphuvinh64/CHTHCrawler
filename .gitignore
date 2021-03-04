@@ -1,4 +1,7 @@
 __pycache__
 *.txt
-result
+result/*
+log/*
 test*
+*.ipynb
+.ipynb_checkpoints/
